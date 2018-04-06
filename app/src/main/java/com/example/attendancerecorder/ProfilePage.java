@@ -1,10 +1,16 @@
 package com.example.attendancerecorder;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -22,8 +28,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,9 +69,10 @@ class DetailsAdapter extends ArrayAdapter<Details> {
         Details details = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_profile_page, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
         // Lookup view for data population
+
         TextView field = (TextView) convertView.findViewById(R.id.field);
         TextView value = (TextView) convertView.findViewById(R.id.value);
         // Populate the data into the template view using the data object
@@ -73,83 +87,75 @@ public class ProfilePage extends AppCompatActivity {
     private final String TAG = ProfilePage.class.getSimpleName();
     private ListView lv;
     ArrayList<HashMap<String, String>> dataList;
-    ArrayAdapter<Details> adapter;
+
     ListView listView;
     HashMap<String, String> data;
+    Bitmap decodedImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
 
 
-        new GetDetails().execute();
+        new GetDetails(this).execute();
+        LayoutInflater inflater = getLayoutInflater();
+
+
+//        if (savedInstanceState == null) {
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            ListViewHeader fragment = new ListViewHeader();
+//            fragmentTransaction.add(R.id.container, fragment).commit();
+//
+//        }
+
     }
 
     private class GetDetails extends AsyncTask<Void, Void, Void>{
+        JSONObject jsonObj;
 
+        String data = "";
+        JSONObject myObj;
+        Activity activity;
+        private ProgressDialog progressDialog;
 
+        public GetDetails(ProfilePage activity) {
+            progressDialog = new ProgressDialog(activity);
+            this.activity = activity;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(ProfilePage.this,"Json Data is downloading",Toast.LENGTH_LONG).show();
+            progressDialog.setMessage("Downloading your data...");
+            progressDialog.show();
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                public void onCancel(DialogInterface arg0) {
+                    GetDetails.this.cancel(true);
+                }
+            });
         }
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            data = new HashMap<>();
-            HttpHandler sh = new HttpHandler();
-            String url = "http://msitis-iiith.appspot.com/api/profile/ag5ifm1zaXRpcy1paWl0aHIUCxIHU3R1ZGVudBiAgICAutyfCgw";
-            String jsonStr = sh.makeServiceCall(url);
-            Log.e(TAG, "Response from url: " + jsonStr);
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-
-                    // Getting JSON Array node
-                    JSONArray dataArray = jsonObj.getJSONArray("data");
-                    int k = dataArray.length();
-                    for (int i = 0; i < k; i++){
-                        JSONObject d = dataArray.getJSONObject(i);
-                        String image = d.getString("image");
-                        String student_fullname = d.getString("student_fullname");
-                        String roll_number = d.getString("roll_number");
-                        String student_email = d.getString("student_email");
-
-                        data.put("image", image);
-                        data.put("student_fullname", student_fullname);
-                        data.put("roll_number", roll_number);
-                        data.put("student_email", student_email);
-
-                    }
+            try {
+                URL url = new URL("http://msitis-iiith.appspot.com/api/profile/ag5ifm1zaXRpcy1paWl0aHIUCxIHU3R1ZGVudBiAgICAutyfCgw");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                StringBuilder dataBuilder = new StringBuilder("");
+                while(line != null){
+                    line = bufferedReader.readLine();
+                    dataBuilder = dataBuilder.append(data).append(line);
                 }
-                catch (final JSONException e) {
-                    Log.e(TAG, "Json parsing error: " + e.getMessage());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                data = dataBuilder.toString();
+            }catch (MalformedURLException e){
+                e.printStackTrace();
 
-                }
+            }catch (IOException e){
+                e.printStackTrace();
             }
-            else {
-                Log.e(TAG, "Couldn't get json from server.");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Couldn't get json from server. Check LogCat for possible errors!",
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-
             return null;
         }
 
@@ -157,34 +163,34 @@ public class ProfilePage extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             ArrayList<Details> arrayOfUsers = new ArrayList<>();
-            DetailsAdapter adapter = new DetailsAdapter(ProfilePage.this, arrayOfUsers);
-            listView = (ListView) findViewById(R.id.details_list_view);
-            adapter.add(new Details("Name", data.get("student_fullname")));
-            adapter.add(new Details("Roll No.", data.get("roll_number")));
-            adapter.add(new Details("Email ID", data.get("student_email")));
-            String image = data.get("image");
-            byte[] latin1;
-            byte[] imageBytes = new byte[0];
+            ArrayAdapter<Details> adapter = new DetailsAdapter(ProfilePage.this, arrayOfUsers);
+//            HttpHandler sh = new HttpHandler();
+//            String url = "http://msitis-iiith.appspot.com/api/profile/ag5ifm1zaXRpcy1paWl0aHIUCxIHU3R1ZGVudBiAgICAutyfCgw";
+//            String jsonStr = sh.makeServiceCall(url);
+
             try {
-                latin1 = image.getBytes("UTF-8");
-                System.out.println(Arrays.toString(latin1));
-                String imageString = Base64.encodeToString(latin1, Base64.DEFAULT);
-                System.out.println("pulihora");
-                System.out.println(imageString.substring(0,12));
-                imageBytes = new String(latin1, "ISO-8859-1").getBytes("UTF-8");
-            } catch (UnsupportedEncodingException e) {
+                listView = (ListView) findViewById(R.id.details_list_view);
+                JSONObject obj = new JSONObject(data);
+                JSONArray JA = obj.getJSONArray("data");
+                myObj = JA.getJSONObject(0);
+                String image_data = myObj.get("image").toString();
+                adapter.add(new Details("Name", myObj.get("student_fullname").toString()));
+                adapter.add(new Details("Roll No.", myObj.get("roll_number").toString()));
+                adapter.add(new Details("Email ID", myObj.get("student_email").toString()));
+                byte[] latinBytes = image_data.getBytes("ISO-8859-1");
+                String b64 = Base64.encodeToString(latinBytes,Base64.DEFAULT);
+                byte[] imgBytes = Base64.decode(b64, Base64.DEFAULT);
+                System.out.println(imgBytes.length);
+                decodedImage = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+                ImageView imageView = (ImageView) findViewById(R.id.profile_image);
+                imageView.setImageBitmap(decodedImage);
+                listView.setAdapter(adapter);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
-//            imageBytes = Base64.decode(imageString, Base64.DEFAULT);
-//            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-//            ImageView imageView = (ImageView) findViewById(R.id.profile_image);
-//            imageView.setImageBitmap(decodedImage);
-            LayoutInflater inflater = getLayoutInflater();
-            ViewGroup header = (ViewGroup)inflater.inflate(R.layout.list_view_header,listView,false);
-            listView.addHeaderView(header);
-            listView.setAdapter(adapter);
-
         }
+
+
     }
 }
