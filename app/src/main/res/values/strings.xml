@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Attendance Recorder</string>
     <string name="title_activity_home_page">HomePage</string>
+    <string name="checkin">check in</string>
+    <string name="check">check</string>
+    <string name="profile">profile</string>
+    <string name="info1">Remaining time</string>
 </resources>

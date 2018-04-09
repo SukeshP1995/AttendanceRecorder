@@ -1,20 +1,17 @@
 package com.example.attendancerecorder;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,32 +19,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 class Details {
     public String field;
     public String value;
 
-    public Details(String field, String value) {
+    Details(String field, String value) {
         this.field = field;
         this.value = value;
     }
@@ -59,12 +46,25 @@ class Details {
 }
 
 class DetailsAdapter extends ArrayAdapter<Details> {
-    public DetailsAdapter(Context context, ArrayList<Details> users) {
+    /**
+     *
+     * @param context context of the app
+     * @param users Arraylist of the users
+     */
+    DetailsAdapter(Context context, ArrayList<Details> users) {
         super(context, 0, users);
     }
 
+    /**
+     *
+     * @param position of type int
+     * @param convertView of type View
+     * @param parent of type ViewGroup
+     * @return of type view
+     */
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         // Get the data item for this position
         Details details = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
@@ -73,9 +73,10 @@ class DetailsAdapter extends ArrayAdapter<Details> {
         }
         // Lookup view for data population
 
-        TextView field = (TextView) convertView.findViewById(R.id.field);
-        TextView value = (TextView) convertView.findViewById(R.id.value);
+        TextView field = convertView.findViewById(R.id.field);
+        TextView value = convertView.findViewById(R.id.value);
         // Populate the data into the template view using the data object
+        assert details != null;
         field.setText(details.field);
         value.setText(details.value);
         // Return the completed view to render on screen
@@ -84,46 +85,41 @@ class DetailsAdapter extends ArrayAdapter<Details> {
 }
 
 public class ProfilePage extends AppCompatActivity {
-    private final String TAG = ProfilePage.class.getSimpleName();
-    private ListView lv;
-    ArrayList<HashMap<String, String>> dataList;
-
     ListView listView;
     HashMap<String, String> data;
     Bitmap decodedImage;
+
+    /**
+     *
+     * @param savedInstanceState of type bundle
+     * Runs after creating the layout
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
-
-
         new GetDetails(this).execute();
-        LayoutInflater inflater = getLayoutInflater();
-
-
-//        if (savedInstanceState == null) {
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            ListViewHeader fragment = new ListViewHeader();
-//            fragmentTransaction.add(R.id.container, fragment).commit();
-//
-//        }
-
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetDetails extends AsyncTask<Void, Void, Void>{
-        JSONObject jsonObj;
-
         String data = "";
         JSONObject myObj;
         Activity activity;
         private ProgressDialog progressDialog;
 
-        public GetDetails(ProfilePage activity) {
+        /**
+         *
+         * @param activity pf type ProfilePage
+         */
+        GetDetails(ProfilePage activity) {
             progressDialog = new ProgressDialog(activity);
             this.activity = activity;
         }
 
+        /**
+         * Runs before a background process
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -136,6 +132,11 @@ public class ProfilePage extends AppCompatActivity {
             });
         }
 
+        /**
+         *
+         * @param arg0 of type Void
+         * @return returns null
+         */
         @Override
         protected Void doInBackground(Void... arg0) {
             try {
@@ -150,26 +151,24 @@ public class ProfilePage extends AppCompatActivity {
                     dataBuilder = dataBuilder.append(data).append(line);
                 }
                 data = dataBuilder.toString();
-            }catch (MalformedURLException e){
-                e.printStackTrace();
-
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
 
 
+        /**
+         *
+         * @param result of type Void
+         *               The function takes result as argument and runs after the background process finishes
+         */
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             ArrayList<Details> arrayOfUsers = new ArrayList<>();
             ArrayAdapter<Details> adapter = new DetailsAdapter(ProfilePage.this, arrayOfUsers);
-//            HttpHandler sh = new HttpHandler();
-//            String url = "http://msitis-iiith.appspot.com/api/profile/ag5ifm1zaXRpcy1paWl0aHIUCxIHU3R1ZGVudBiAgICAutyfCgw";
-//            String jsonStr = sh.makeServiceCall(url);
-
             try {
-                listView = (ListView) findViewById(R.id.details_list_view);
+                listView = findViewById(R.id.details_list_view);
                 JSONObject obj = new JSONObject(data);
                 JSONArray JA = obj.getJSONArray("data");
                 myObj = JA.getJSONObject(0);
@@ -182,15 +181,12 @@ public class ProfilePage extends AppCompatActivity {
                 byte[] imgBytes = Base64.decode(b64, Base64.DEFAULT);
                 System.out.println(imgBytes.length);
                 decodedImage = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
-                ImageView imageView = (ImageView) findViewById(R.id.profile_image);
+                ImageView imageView = findViewById(R.id.profile_image);
                 imageView.setImageBitmap(decodedImage);
                 listView.setAdapter(adapter);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
-
-
     }
 }
