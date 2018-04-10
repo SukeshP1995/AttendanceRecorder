@@ -5,4 +5,8 @@
     <string name="check">check</string>
     <string name="profile">profile</string>
     <string name="info1">Remaining time</string>
+    <string name="session1">Session 1</string>
+    <string name="session2">Session 2</string>
+    <string name="session3">Session 3</string>
+    <string name="leaves">Leaves - </string>
 </resources>

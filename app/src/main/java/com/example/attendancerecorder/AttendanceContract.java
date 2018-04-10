@@ -1,20 +1,24 @@
 package com.example.attendancerecorder;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 class AttendanceContract {
     private AttendanceHelper mDbHelper;
     private SQLiteDatabase db;
-     AttendanceContract(Context context){
+    AttendanceContract(Context context){
         mDbHelper = new AttendanceHelper(context);
         db = mDbHelper.getWritableDatabase();
     }
@@ -70,8 +74,10 @@ class AttendanceContract {
         long newRowId = db.insert(AttendanceEntry.TABLE_NAME, null, values);
         System.out.println(newRowId);
     }
+
     private static final String TAG = "MyActivity";
     void update(int session){
+        System.out.println("hello worldfck");
         values = new ContentValues();
         String date = new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "IN")).format(Calendar.getInstance().getTime());
         values.put(AttendanceEntry.COLUMN_NAME_PENALTY, 0.0);
@@ -80,6 +86,52 @@ class AttendanceContract {
                 AttendanceEntry.COLUMN_NAME_DATE + " = ? AND " + AttendanceEntry.COLUMN_NAME_SESSION + " = ?",
                 new String[]{date, session+"" });
     }
+
+    ArrayList<HashMap<String, String>> showEntries(){
+        ArrayList<HashMap<String, String>> allEntries = new ArrayList<>();
+        String query = "SELECT  * FROM " + AttendanceEntry.TABLE_NAME ;
+        String sumQuery = "SELECT "+ AttendanceEntry.COLUMN_NAME_DATE +", SUM("+AttendanceEntry.COLUMN_NAME_PENALTY+") AS sum FROM " + AttendanceEntry.TABLE_NAME  + " GROUP BY "+AttendanceEntry.COLUMN_NAME_DATE;
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Cursor sumCursor = db.rawQuery(sumQuery, null);
+        if (sumCursor != null && sumCursor.moveToFirst()){
+            cursor.moveToFirst();
+            do{
+                HashMap<String, String> details = new HashMap<>();
+                int sumI = sumCursor.getColumnIndex("sum");
+                details.put("sum", sumCursor.getString(sumI));
+                int dateI = sumCursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_DATE);
+                details.put("date", sumCursor.getString(dateI));
+                int sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                if (Double.parseDouble(cursor.getString(sessionI)) == 0){
+                    details.put("session1", "Present");
+                }
+                else{
+                    details.put("session1", "Absent");
+                }
+                cursor.moveToNext();
+                sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                if (Double.parseDouble(cursor.getString(sessionI)) == 0){
+                    details.put("session2", "Present");
+                }
+                else{
+                    details.put("session2", "Absent");
+                }
+                cursor.moveToNext();
+                sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                if (Double.parseDouble(cursor.getString(sessionI)) == 0){
+                    details.put("session3", "Present");
+                }
+                else{
+                    details.put("session3", "Absent");
+                }
+                cursor.moveToNext();
+                allEntries.add(details);
+            }while (sumCursor.moveToNext());
+            cursor.close();
+            sumCursor.close();
+        }
+        return  allEntries;
+    }
+
 }
-
-

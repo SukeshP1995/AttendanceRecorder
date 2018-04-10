@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
+import java.util.TimeZone;
 
 public class HomePage extends AppCompatActivity {
     private static final String TAG = "MyActivity";
@@ -22,35 +22,10 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         Button button = findViewById(R.id.check_in_button);
-        final Calendar session1before = Calendar.getInstance();
-        final Calendar session1after = Calendar.getInstance();
-        final Calendar session2before = Calendar.getInstance();
-        final Calendar session2after = Calendar.getInstance();
-        final Calendar session3before = Calendar.getInstance();
-        final Calendar session3after = Calendar.getInstance();
-        final Calendar calendar = Calendar.getInstance();
-
-        try{
-            session1before.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("08:50:00"));
-            session1after.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("09:10:00"));
-            session2before.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("10:50:00"));
-            session2after.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("11:10:00"));
-            session3before.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("14:50:00"));
-            session3after.setTime(new SimpleDateFormat("HH:mm:ss",new Locale("en", "IN")).parse("16:30:00"));
-        }
-        catch (Exception e){
-            e.getStackTrace();
-        }
-        int flag;
-        if (calendar.after(session1before.getTime()) && calendar.before(session1after.getTime())){
-            flag = 1;
-        }
-        else if (calendar.after(session2before.getTime()) && calendar.before(session2after.getTime())){
-            flag = 2;
-        }
-        else if (calendar.after(session3before.getTime()) && calendar.before(session3after.getTime())){
-            flag = 3;
-        }
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
+        Date now = calendar.getTime();
+        SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        String currentTime = date.format(now);
 
         final AttendanceContract attendanceContract = new AttendanceContract(getApplicationContext());
         attendanceContract.insert(1, 0.25);
@@ -58,19 +33,23 @@ public class HomePage extends AppCompatActivity {
         attendanceContract.insert(3, 0.5);
 
         button.setOnClickListener(new View.OnClickListener() {
-            Calendar calendar = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
+            Date now = calendar.getTime();
+            SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            String currentTime = date.format(now);
             @Override
             public void onClick(View v) {
-
-                if (calendar.after(session1before.getTime()) && calendar.before(session1after.getTime())){
+                if (currentTime.compareTo("08:50:00")>0 && currentTime.compareTo("09:10:00")<0){
                     attendanceContract.update(1);
                 }
-                else if (calendar.after(session2before.getTime()) && calendar.before(session2after.getTime())){
+                else if (currentTime.compareTo("10:50:00")>0 && currentTime.compareTo("11:10:00")<0){
                     attendanceContract.update(2);
                 }
-                else if (calendar.after(session3before.getTime()) && calendar.before(session3after.getTime())){
+                else if (currentTime.compareTo("13:50:00")>0 && currentTime.compareTo("14:10:00")<0){
+
                     attendanceContract.update(3);
                 }
+                System.out.println(attendanceContract.showEntries().toString());
             }
         });
     }
@@ -85,3 +64,4 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 }
+
