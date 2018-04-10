@@ -87,8 +87,8 @@ class AttendanceContract {
                 new String[]{date, session+"" });
     }
 
-    ArrayList<HashMap<String, String>> showEntries(){
-        ArrayList<HashMap<String, String>> allEntries = new ArrayList<>();
+    ArrayList<Fields> showEntries(){
+        ArrayList<Fields> allEntries = new ArrayList<>();
         String query = "SELECT  * FROM " + AttendanceEntry.TABLE_NAME ;
         String sumQuery = "SELECT "+ AttendanceEntry.COLUMN_NAME_DATE +", SUM("+AttendanceEntry.COLUMN_NAME_PENALTY+") AS sum FROM " + AttendanceEntry.TABLE_NAME  + " GROUP BY "+AttendanceEntry.COLUMN_NAME_DATE;
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -97,36 +97,39 @@ class AttendanceContract {
         if (sumCursor != null && sumCursor.moveToFirst()){
             cursor.moveToFirst();
             do{
-                HashMap<String, String> details = new HashMap<>();
+
                 int sumI = sumCursor.getColumnIndex("sum");
-                details.put("sum", sumCursor.getString(sumI));
+                String leaves = sumCursor.getString(sumI);
                 int dateI = sumCursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_DATE);
-                details.put("date", sumCursor.getString(dateI));
+                String date = sumCursor.getString(dateI);
                 int sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                String session1;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
-                    details.put("session1", "Present");
+                    session1 = "Present";
                 }
                 else{
-                    details.put("session1", "Absent");
+                    session1 = "Absent";
                 }
                 cursor.moveToNext();
                 sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                String session2;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
-                    details.put("session2", "Present");
+                    session2 = "Present";
                 }
                 else{
-                    details.put("session2", "Absent");
+                    session2 = "Absent";
                 }
                 cursor.moveToNext();
                 sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
+                String session3;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
-                    details.put("session3", "Present");
+                    session3 = "Present";
                 }
                 else{
-                    details.put("session3", "Absent");
+                    session3 = "Absent";
                 }
                 cursor.moveToNext();
-                allEntries.add(details);
+                allEntries.add(new Fields(date, leaves, session1, session2, session3));
             }while (sumCursor.moveToNext());
             cursor.close();
             sumCursor.close();

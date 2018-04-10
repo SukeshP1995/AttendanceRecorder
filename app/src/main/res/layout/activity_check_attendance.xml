@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".CheckAttendance">
     <ListView
-        android:id="@+id/details_list_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/attendance_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -46,10 +46,8 @@ public class HomePage extends AppCompatActivity {
                     attendanceContract.update(2);
                 }
                 else if (currentTime.compareTo("13:50:00")>0 && currentTime.compareTo("14:10:00")<0){
-
                     attendanceContract.update(3);
                 }
-                System.out.println(attendanceContract.showEntries().toString());
             }
         });
     }

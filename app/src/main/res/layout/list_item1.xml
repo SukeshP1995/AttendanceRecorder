@@ -24,7 +24,7 @@
 
 
             <TextView
-                android:id="@+id/field1"
+                android:id="@+id/date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="60"
@@ -36,7 +36,7 @@
                 android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
             <TextView
-                android:id="@+id/value1"
+                android:id="@+id/leaves"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="40"
@@ -56,10 +56,10 @@
             android:weightSum="100">
 
             <TextView
-                android:id="@+id/field2"
+                android:id="@+id/field1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="70"
+                android:layout_weight="60"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
@@ -68,10 +68,41 @@
                 android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
             <TextView
-                android:id="@+id/value2"
+                android:id="@+id/session1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
+                android:layout_weight="40"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/field2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="60"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:text="@string/session2"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/session2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="40"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
@@ -90,38 +121,7 @@
                 android:id="@+id/field3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="70"
-                android:gravity="center_vertical"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:text="@string/session2"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-
-            <TextView
-                android:id="@+id/value3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:gravity="center_vertical"
-                android:minHeight="?android:attr/listPreferredItemHeightSmall"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <TextView
-                android:id="@+id/field4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="70"
+                android:layout_weight="60"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
@@ -130,14 +130,15 @@
                 android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
             <TextView
-                android:id="@+id/value4"
+                android:id="@+id/session3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="30"
+                android:layout_weight="40"
                 android:gravity="center_vertical"
                 android:minHeight="?android:attr/listPreferredItemHeightSmall"
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart" />
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
 
         </LinearLayout>
     </LinearLayout>
