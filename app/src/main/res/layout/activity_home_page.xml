@@ -50,26 +50,54 @@
             android:id="@+id/info"
             android:textColor="#E3F2FD"
             android:background="#3F51B5"
-
             android:layout_width="192dp"
             android:layout_height="64dp"
-            android:text="TextView"
+            android:text="@string/timer_info"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/check_out_button" />
 
-        <TextView
-            android:id="@+id/count_down"
+        <LinearLayout
             android:layout_width="192dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/shape1"
-            android:text="TextView"
-            android:gravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/info" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="99">
+
+            <TextView
+                android:id="@+id/hh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/mm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+            <TextView
+                android:id="@+id/ss"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:gravity="center_vertical"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
