@@ -40,7 +40,7 @@
             android:textColor="#E3F2FD"
             android:background="#3F51B5"
             android:layout_width="192dp"
-            android:layout_height="64dp"
+            android:layout_height="24dp"
             android:text="@string/timer_info"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +51,7 @@
             android:layout_width="192dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@drawable/border"
             android:weightSum="99">
 
             <TextView
