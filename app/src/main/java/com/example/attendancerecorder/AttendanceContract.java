@@ -77,7 +77,6 @@ class AttendanceContract {
 
     private static final String TAG = "MyActivity";
     void update(int session){
-        System.out.println("hello worldfck");
         values = new ContentValues();
         String date = new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "IN")).format(Calendar.getInstance().getTime());
         values.put(AttendanceEntry.COLUMN_NAME_PENALTY, 0.0);

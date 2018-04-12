@@ -2,7 +2,7 @@
     <string name="app_name">Attendance Recorder</string>
     <string name="title_activity_home_page">HomePage</string>
     <string name="checkin">check in</string>
-    <string name="check">check</string>
+    <string name="check_attendance">check Attendance</string>
     <string name="profile">profile</string>
     <string name="info1">Remaining time</string>
     <string name="session1">Session 1</string>
@@ -10,4 +10,8 @@
     <string name="session3">Session 3</string>
     <string name="leaves">Leaves - </string>
     <string name="timer_info">Remaining time to check in</string>
+    <string name="course_id">ID</string>
+    <string name="course_name">Name</string>
+    <string name="grade">Grade</string>
+    <string name="mentor">Mentor</string>
 </resources>

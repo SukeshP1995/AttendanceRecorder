@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Home Page" android:id="@+id/homePage"></item>
+    <item android:title="Check Attendance" android:id="@+id/checkAttendance"></item>
+    <item android:title="Profile Page" android:id="@+id/profilePage"></item>
+    <item android:title="Course Profile" android:id="@+id/courseProfile"></item>
+</menu>

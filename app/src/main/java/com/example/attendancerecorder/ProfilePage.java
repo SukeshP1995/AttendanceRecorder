@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,59 +33,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class Details {
-    public String field;
-    public String value;
 
-    Details(String field, String value) {
-        this.field = field;
-        this.value = value;
-    }
 
-    @Override
-    public String toString() {
-        return field+" "+value;
-    }
-}
 
-class DetailsAdapter extends ArrayAdapter<Details> {
-    /**
-     *
-     * @param context context of the app
-     * @param users Arraylist of the users
-     */
-    DetailsAdapter(Context context, ArrayList<Details> users) {
-        super(context, 0, users);
-    }
-
-    /**
-     *
-     * @param position of type int
-     * @param convertView of type View
-     * @param parent of type ViewGroup
-     * @return of type view
-     */
-    @NonNull
-    @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        // Get the data item for this position
-        Details details = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
-        }
-        // Lookup view for data population
-
-        TextView field = convertView.findViewById(R.id.field);
-        TextView value = convertView.findViewById(R.id.value);
-        // Populate the data into the template view using the data object
-        assert details != null;
-        field.setText(details.field);
-        value.setText(details.value);
-        // Return the completed view to render on screen
-        return convertView;
-    }
-}
 
 public class ProfilePage extends AppCompatActivity {
     ListView listView;
@@ -99,6 +52,21 @@ public class ProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
         new GetDetails(this).execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.homePage) startActivity(new Intent(this, HomePage.class));
+        if (id == R.id.checkAttendance) startActivity(new Intent(this, CheckAttendance.class));
+        if (id == R.id.courseProfile) startActivity(new Intent(this, CourseProfile.class));
+        return true;
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -184,6 +152,7 @@ public class ProfilePage extends AppCompatActivity {
                 ImageView imageView = findViewById(R.id.profile_image);
                 imageView.setImageBitmap(decodedImage);
                 listView.setAdapter(adapter);
+                progressDialog.dismiss();
             } catch (Exception e) {
                 e.printStackTrace();
             }

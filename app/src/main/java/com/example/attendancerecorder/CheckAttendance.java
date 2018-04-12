@@ -1,10 +1,13 @@
 package com.example.attendancerecorder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -70,5 +73,20 @@ public class CheckAttendance extends AppCompatActivity {
         AttendanceContract ac = new AttendanceContract(getApplicationContext());
         ArrayAdapter<Fields> adapter = new FieldsAdapter(this, ac.showEntries());
         listView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.homePage) startActivity(new Intent(this, HomePage.class));
+        if (id == R.id.profilePage) startActivity(new Intent(this, ProfilePage.class));
+        if (id == R.id.courseProfile) startActivity(new Intent(this, CourseProfile.class));
+        return true;
     }
 }

@@ -7,6 +7,8 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -40,8 +42,8 @@ public class HomePage extends AppCompatActivity {
         if (currentTime.compareTo("08:50:00")>0 && currentTime.compareTo("09:10:00")<0){
             startTimer(currentTime, "09:10:00");
         }
-        else if (currentTime.compareTo("11:40:00")>0 && currentTime.compareTo("12:20:00")<0){
-            startTimer(currentTime, "12:20:00");
+        else if (currentTime.compareTo("10:50:00")>0 && currentTime.compareTo("11:10:00")<0){
+            startTimer(currentTime, "11:10:00");
         }
         else if (currentTime.compareTo("13:50:00")>0 && currentTime.compareTo("14:10:00")<0){
             startTimer(currentTime, "14:10:00");
@@ -62,6 +64,21 @@ public class HomePage extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.profilePage) startActivity(new Intent(this, ProfilePage.class));
+        if (id == R.id.checkAttendance) startActivity(new Intent(this, CheckAttendance.class));
+        if (id == R.id.courseProfile) startActivity(new Intent(this, CourseProfile.class));
+        return true;
     }
 
     public void showProfile(View view) {
