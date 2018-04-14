@@ -50,6 +50,9 @@ class FieldsAdapter extends ArrayAdapter<Fields> {
         TextView session1 = convertView.findViewById(R.id.session1);
         TextView session2 = convertView.findViewById(R.id.session2);
         TextView session3 = convertView.findViewById(R.id.session3);
+        TextView location1 = convertView.findViewById(R.id.location1);
+        TextView location2 = convertView.findViewById(R.id.location2);
+        TextView location3 = convertView.findViewById(R.id.location3);
         // Populate the data into the template view using the data object
         assert fields != null;
         date.setText(fields.date);
@@ -58,6 +61,9 @@ class FieldsAdapter extends ArrayAdapter<Fields> {
         session1.setText(fields.session1);
         session2.setText(fields.session2);
         session3.setText(fields.session3);
+        location1.setText(fields.location1);
+        location2.setText(fields.location2);
+        location3.setText(fields.location3);
         // Return the completed view to render on screen
         return convertView;
     }

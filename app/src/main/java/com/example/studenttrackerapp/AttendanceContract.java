@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -31,6 +32,7 @@ class AttendanceContract {
         private static final String COLUMN_NAME_DATE = "date";
         private static final String COLUMN_NAME_SESSION = "session";
         private static final String COLUMN_NAME_PENALTY = "penalty";
+        private static final String COLUMN_NAME_LOCATION = "location";
     }
 
     private static final String SQL_CREATE_ENTRIES =
@@ -38,6 +40,7 @@ class AttendanceContract {
                     AttendanceEntry.COLUMN_NAME_DATE + " TEXT," +
                     AttendanceEntry.COLUMN_NAME_SESSION + " INTEGER," +
                     AttendanceEntry.COLUMN_NAME_PENALTY + " FLOAT," +
+                    AttendanceEntry.COLUMN_NAME_LOCATION + " TEXT," +
                     "PRIMARY KEY (date, session))";
 
     private static final String SQL_DELETE_ENTRIES =
@@ -71,15 +74,17 @@ class AttendanceContract {
         values.put(AttendanceEntry.COLUMN_NAME_SESSION, session);
         values.put(AttendanceEntry.COLUMN_NAME_PENALTY, penalty);
         values.put(AttendanceEntry.COLUMN_NAME_DATE,  new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "IN")).format(Calendar.getInstance().getTime()));
+        values.put(AttendanceEntry.COLUMN_NAME_LOCATION, "none");
         long newRowId = db.insert(AttendanceEntry.TABLE_NAME, null, values);
         System.out.println(newRowId);
     }
 
     private static final String TAG = "MyActivity";
-    void update(int session){
+    void update(int session, String location){
         values = new ContentValues();
         String date = new SimpleDateFormat("yyyy-MM-dd", new Locale("en", "IN")).format(Calendar.getInstance().getTime());
         values.put(AttendanceEntry.COLUMN_NAME_PENALTY, 0.0);
+        values.put(AttendanceEntry.COLUMN_NAME_LOCATION, location);
         db.update(AttendanceEntry.TABLE_NAME,
                 values,
                 AttendanceEntry.COLUMN_NAME_DATE + " = ? AND " + AttendanceEntry.COLUMN_NAME_SESSION + " = ?",
@@ -101,6 +106,8 @@ class AttendanceContract {
                 String leaves = sumCursor.getString(sumI);
                 int dateI = sumCursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_DATE);
                 String date = sumCursor.getString(dateI);
+                int locationI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_LOCATION);
+                String location1 = cursor.getString(locationI);
                 int sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
                 String session1;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
@@ -110,6 +117,8 @@ class AttendanceContract {
                     session1 = "Absent";
                 }
                 cursor.moveToNext();
+                locationI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_LOCATION);
+                String location2 = cursor.getString(locationI);
                 sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
                 String session2;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
@@ -119,6 +128,8 @@ class AttendanceContract {
                     session2 = "Absent";
                 }
                 cursor.moveToNext();
+                locationI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_LOCATION);
+                String location3 = cursor.getString(locationI);
                 sessionI = cursor.getColumnIndex(AttendanceEntry.COLUMN_NAME_PENALTY);
                 String session3;
                 if (Double.parseDouble(cursor.getString(sessionI)) == 0){
@@ -128,7 +139,7 @@ class AttendanceContract {
                     session3 = "Absent";
                 }
                 cursor.moveToNext();
-                allEntries.add(new Fields(date, leaves, session1, session2, session3));
+                allEntries.add(new Fields(date, leaves, session1, session2, session3, location1, location2, location3));
             }while (sumCursor.moveToNext());
             cursor.close();
             sumCursor.close();
