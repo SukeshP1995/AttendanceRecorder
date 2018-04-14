@@ -3,6 +3,7 @@ package com.example.studenttrackerapp;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,11 +12,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,8 +38,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class HomePage extends AppCompatActivity {
-    private static final int REQUEST_CODE = 1000;
-    private static final String TAG = "MyActivity";
+
     AttendanceContract attendanceContract;
     private ArrayList<String> permissionsToRequest;
     private ArrayList<String> permissionsRejected = new ArrayList<>();
@@ -52,15 +52,13 @@ public class HomePage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         attendanceContract = new AttendanceContract(getApplicationContext());
-        System.out.println("bla");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
+        startService(new Intent(this, NotificationService.class));
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
-
+        locationTrack = new LocationTrack(context);
         permissionsToRequest = findUnAskedPermissions(permissions);
-
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
@@ -71,8 +69,7 @@ public class HomePage extends AppCompatActivity {
 
 
         this.mHandler = new Handler();
-
-        this.mHandler.postDelayed(m_Runnable,5000);
+        this.mHandler.post(m_Runnable);
     }
 
     @Override
@@ -90,13 +87,9 @@ public class HomePage extends AppCompatActivity {
         return true;
     }
 
-    public void showProfile(View view) {
-        Intent intent = new Intent(this, ProfilePage.class);
-        startActivity(intent);
-    }
 
     public void checkAttendance(View view){
-        Intent intent = new Intent(this, CheckAttendance.class);
+        Intent intent = new Intent(this,  CheckAttendance.class);
         startActivity(intent);
     }
 
@@ -137,7 +130,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     private ArrayList<String> findUnAskedPermissions(ArrayList<String> wanted) {
-        ArrayList result = new ArrayList();
+        ArrayList<String> result = new ArrayList<>();
 
         for (String perm : wanted) {
             if (!hasPermission(perm)) {
@@ -163,7 +156,7 @@ public class HomePage extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode) {
 
@@ -213,7 +206,6 @@ public class HomePage extends AppCompatActivity {
         public void run()
 
         {
-            Button button = findViewById(R.id.check_in_button);
             Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5:30"));
             Date now = calendar.getTime();
             SimpleDateFormat date = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
@@ -233,6 +225,11 @@ public class HomePage extends AppCompatActivity {
                 startTimer(currentTime, "14:10:00");
             }
 
+            if (!locationTrack.canGetLocation()) {
+                locationTrack.showSettingsAlert();
+
+            }
+            Button button = findViewById(R.id.check_in_button);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -242,7 +239,7 @@ public class HomePage extends AppCompatActivity {
                     if (currentTime.compareTo("08:50:00")>0 && currentTime.compareTo("09:10:00")<0){
                         i = 1;
                     }
-                    else if (currentTime.compareTo("10:20:00")>0 && currentTime.compareTo("11:10:00")<0){
+                    else if (currentTime.compareTo("10:50:00")>0 && currentTime.compareTo("11:10:00")<0){
                         i = 2;
                     }
                     else if (currentTime.compareTo("12:34:00")>0 && currentTime.compareTo("14:10:00")<0){
@@ -266,11 +263,11 @@ public class HomePage extends AppCompatActivity {
                 }
             });
 
-
             HomePage.this.mHandler.postDelayed(m_Runnable,5000);
         }
 
     };
+
 
     @Override
     protected void onDestroy() {

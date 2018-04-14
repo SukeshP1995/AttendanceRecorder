@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Student Tracker App</string>
+    <string name="app_name">Student Tracker</string>
     <string name="title_activity_home_page">HomePage</string>
     <string name="checkin">check in</string>
     <string name="check_attendance">check Attendance</string>
@@ -14,5 +14,7 @@
     <string name="course_name">Name</string>
     <string name="grade">Grade</string>
     <string name="mentor">Mentor</string>
+    <string name="channel_name">Remainder</string>
+    <string name="channel_description">Remainder for attendance</string>
 </resources>
 

@@ -28,6 +28,9 @@
         </activity>
 
         <service android:name=".LocationTrack" />
+        <service android:name=".NotificationService">
+
+        </service>
     </application>
 
 </manifest>
